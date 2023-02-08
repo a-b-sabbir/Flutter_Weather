@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:velocity_x/velocity_x.dart';
 import 'package:weather_app/const/lists.dart';
+import 'package:weather_app/controller/home_controller.dart';
+import 'package:weather_app/model/updated_weather.dart';
 import 'package:weather_app/screens/about_screen.dart';
 import 'package:weather_app/widgets/text_style.dart';
 import 'package:get/get.dart';
@@ -11,6 +13,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.put(HomeController());
+
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -31,18 +35,15 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: VxPopupMenu(
                 menuBuilder: () {
-                  return Column(
-                          children: List.generate(
-                              1,
-                              (index) => Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(children: [
-                                      boldText(
-                                          text: 'About', color: Colors.black)
-                                    ]).onTap(() {
-                                      Get.to(() => const AboutScreen());
-                                    }),
-                                  )))
+                  return Column(children: [
+                    boldText(text: 'About', color: Colors.black)
+                        .box
+                        .padding(const EdgeInsets.all(5.0))
+                        .make()
+                        .onTap(() {
+                      Get.to(() => const AboutScreen());
+                    }),
+                  ])
                       .box
                       .width(100)
                       .roundedSM
@@ -60,84 +61,113 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.only(top: 100),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  const Icon(
-                    Icons.location_on_outlined,
-                    size: 30,
-                  ),
-                  5.widthBox,
-                  boldText(text: 'Dhaka  ', size: 50.0),
-                ]),
-                10.heightBox,
-                boldText(
-                    text: intl.DateFormat('MMMM d, EEE,   hh:mm')
-                        .format(DateTime.now()),
-                    size: 20.0),
-                20.heightBox,
-                const Icon(
-                  Icons.sunny,
-                  color: Colors.amberAccent,
-                  size: 150,
-                ),
-                30.heightBox,
-                boldText(text: '30° C', size: 40.0),
-                15.heightBox,
-                normalText(text: 'Haze', size: 25.0),
-                50.heightBox,
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: boldText(text: '  Weather Details', size: 30.0)),
-                const Divider(
-                  thickness: 1.5,
-                  color: Colors.white,
-                  indent: 15,
-                  endIndent: 40,
-                ),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 4,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, mainAxisExtent: 200),
-                  itemBuilder: (context, index) {
-                    return Column(
+            padding: const EdgeInsets.only(top: 100),
+            child: FutureBuilder(
+              future: controller.updatedData,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  SavedData data = snapshot.data;
+
+                  return SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            boldText(
-                                text: weatherDetailsTitles[index],
-                                color: Color.fromARGB(255, 39, 72, 88),
-                                size: 16.0),
-                          ],
-                        ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.location_on_outlined,
+                                size: 30,
+                              ),
+                              5.widthBox,
+                              boldText(text: data.name, size: 50.0),
+                            ]),
                         10.heightBox,
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            weatherDetailsValues[index].text.white.make(),
-                          ],
+                        boldText(
+                            text: intl.DateFormat('MMMM d, EEE,   hh:mm')
+                                .format(DateTime.now()),
+                            size: 20.0),
+                        20.heightBox,
+                        const Icon(
+                          Icons.sunny,
+                          color: Colors.amberAccent,
+                          size: 150,
+                        ),
+                        30.heightBox,
+                        boldText(
+                            text: '${data.main.temp.toInt()}° C', size: 40.0),
+                        15.heightBox,
+                        normalText(text: data.weather[0].main, size: 25.0),
+                        50.heightBox,
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: boldText(
+                                text: '  Weather Details', size: 30.0)),
+                        const Divider(
+                          thickness: 1.5,
+                          color: Colors.white,
+                          indent: 15,
+                          endIndent: 40,
+                        ),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: weatherDetailsTitles.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3, mainAxisExtent: 300),
+                          itemBuilder: (context, index) {
+                            var weatherDetailsValues = [
+                              '${data.wind.speed.toInt()} km/h',
+                              '${data.main.humidity} %',
+                              '${data.main.pressure} hPa',
+                              '${data.main.feelsLike.toInt()}° C',
+                              '${data.visibility.toInt() / 1000} km',
+                              '${data.clouds.all} %',
+                            ];
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    boldText(
+                                        text: weatherDetailsTitles[index],
+                                        color: const Color.fromARGB(
+                                            255, 39, 72, 88),
+                                        size: 16.0),
+                                  ],
+                                ),
+                                10.heightBox,
+                                Container(
+                                  alignment: Alignment.center,
+                                  child: weatherDetailsValues[index]
+                                      .text
+                                      .white
+                                      .size(16)
+                                      .make(),
+                                )
+                                    .box
+                                    .outerShadowLg
+                                    .width(70)
+                                    .height(120)
+                                    .color(
+                                        const Color.fromARGB(255, 91, 167, 192))
+                                    .roundedLg
+                                    .make(),
+                              ],
+                            );
+                          },
                         )
-                            .box
-                            .outerShadowLg
-                            .width(60)
-                            .height(100)
-                            .color(Color.fromARGB(255, 91, 167, 192))
-                            .roundedLg
-                            .makeCentered(),
                       ],
-                    );
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
+                    ),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            )),
       ),
     );
   }

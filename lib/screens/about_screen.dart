@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:weather_app/const/strings.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -15,12 +16,9 @@ class AboutScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             10.heightBox,
-            'The weather app provides users with real-time information about the current weather conditions and forecast for a specific location. It typically uses data from weather services or weather APIs to deliver accurate and up-to-date information about temperature, precipitation, wind speed and direction, humidity, and other key weather factors.'
-                .text
-                .size(20)
-                .make(),
+            about.text.size(20).make(),
             const Spacer(),
-            'Developed By A B SABBIR'.text.size(15.0).makeCentered(),
+            credit.text.size(15.0).makeCentered(),
             10.heightBox
           ],
         ));
