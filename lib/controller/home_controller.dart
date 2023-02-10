@@ -8,6 +8,7 @@ class HomeController extends GetxController {
   void onInit() async {
     await getLocation();
     updatedData = fetchDataAndSave(latitude.value, longitude.value);
+
     super.onInit();
   }
 
@@ -23,6 +24,7 @@ class HomeController extends GetxController {
     isLocationEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!isLocationEnabled) {
+      print('Location is off');
       return Future.error('Location services are disabled.');
     }
     // Test if permission is granted.

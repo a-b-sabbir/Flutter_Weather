@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final savedData = savedDataFromJson(jsonString);
-
 import 'dart:convert';
 
 SavedData savedDataFromJson(String str) => SavedData.fromJson(json.decode(str));
@@ -10,6 +6,7 @@ String savedDataToJson(SavedData data) => json.encode(data.toJson());
 
 class SavedData {
   SavedData({
+    required this.id,
     required this.coord,
     required this.weather,
     required this.main,
@@ -18,7 +15,7 @@ class SavedData {
     required this.clouds,
     required this.name,
   });
-
+  int id;
   Coord coord;
   List<Weather> weather;
   Main main;
@@ -28,15 +25,15 @@ class SavedData {
   String name;
 
   factory SavedData.fromJson(Map<String, dynamic> json) => SavedData(
-        coord: Coord.fromJson(json["coord"]),
-        weather:
-            List<Weather>.from(json["weather"].map((x) => Weather.fromJson(x))),
-        main: Main.fromJson(json["main"]),
-        visibility: json["visibility"],
-        wind: Wind.fromJson(json["wind"]),
-        clouds: Clouds.fromJson(json["clouds"]),
-        name: json["name"],
-      );
+      coord: Coord.fromJson(json["coord"]),
+      weather:
+          List<Weather>.from(json["weather"].map((x) => Weather.fromJson(x))),
+      main: Main.fromJson(json["main"]),
+      visibility: json["visibility"],
+      wind: Wind.fromJson(json["wind"]),
+      clouds: Clouds.fromJson(json["clouds"]),
+      name: json["name"],
+      id: json["id"]);
 
   Map<String, dynamic> toJson() => {
         "coord": coord.toJson(),
@@ -46,6 +43,7 @@ class SavedData {
         "wind": wind.toJson(),
         "clouds": clouds.toJson(),
         "name": name,
+        "id": id
       };
 }
 
@@ -136,19 +134,15 @@ class Weather {
 class Wind {
   Wind({
     required this.speed,
-    required this.deg,
   });
 
   num speed;
-  num deg;
 
   factory Wind.fromJson(Map<String, dynamic> json) => Wind(
         speed: json["speed"],
-        deg: json["deg"],
       );
 
   Map<String, dynamic> toJson() => {
         "speed": speed,
-        "deg": deg,
       };
 }

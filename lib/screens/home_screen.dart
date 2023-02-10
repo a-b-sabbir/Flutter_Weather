@@ -7,11 +7,9 @@ import 'package:weather_app/model/updated_weather.dart';
 import 'package:weather_app/screens/about_screen.dart';
 import 'package:weather_app/widgets/text_style.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
-  final RefreshController refreshController = RefreshController();
+  const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(HomeController());
@@ -70,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                         SavedData data = snapshot.data;
 
                         return SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           child: Column(
                             children: [
                               Row(
@@ -172,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   )
-                : Center(
+                : const Center(
                     child: CircularProgressIndicator(),
                   ))),
       ),

@@ -8,3 +8,4 @@ const weatherDetailsTitles = [
   visibility,
   clouds
 ];
+const about_list = [about_english, about_bangla, about_arabic];
