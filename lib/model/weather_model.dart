@@ -1,11 +1,12 @@
 import 'dart:convert';
 
-SavedData savedDataFromJson(String str) => SavedData.fromJson(json.decode(str));
+WeatherModel savedDataFromJson(String str) =>
+    WeatherModel.fromJson(json.decode(str));
 
-String savedDataToJson(SavedData data) => json.encode(data.toJson());
+String savedDataToJson(WeatherModel data) => json.encode(data.toJson());
 
-class SavedData {
-  SavedData({
+class WeatherModel {
+  WeatherModel({
     required this.id,
     required this.coord,
     required this.weather,
@@ -24,7 +25,7 @@ class SavedData {
   Clouds clouds;
   String name;
 
-  factory SavedData.fromJson(Map<String, dynamic> json) => SavedData(
+  factory WeatherModel.fromJson(Map<String, dynamic> json) => WeatherModel(
       coord: Coord.fromJson(json["coord"]),
       weather:
           List<Weather>.from(json["weather"].map((x) => Weather.fromJson(x))),

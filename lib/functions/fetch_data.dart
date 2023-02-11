@@ -1,9 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weather_app/model/updated_weather.dart';
+import 'package:weather_app/model/weather_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:hive/hive.dart';
+import 'package:get/get.dart';
 
 const key = "4df9479620c3bbb9e98ef89039a5eab0";
 
@@ -16,7 +17,6 @@ fetchDataAndSave(lat, long) async {
     var link =
         "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$long&appid=$key&units=metric";
     var response = await http.get(Uri.parse(link));
-
     if (response.statusCode == 200) {
       data = savedDataFromJson(response.body.toString());
 

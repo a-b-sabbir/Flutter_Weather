@@ -3,17 +3,18 @@ import 'package:intl/intl.dart' as intl;
 import 'package:velocity_x/velocity_x.dart';
 import 'package:weather_app/const/const.dart';
 import 'package:weather_app/controller/home_controller.dart';
-import 'package:weather_app/model/updated_weather.dart';
+import 'package:weather_app/model/weather_model.dart';
 import 'package:weather_app/screens/about_screen.dart';
 import 'package:weather_app/widgets/text_style.dart';
 import 'package:get/get.dart';
+import 'package:weather_app/widgets/weather_icon.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(HomeController());
-
+    String fetchedIcon;
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
@@ -65,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                     future: controller.updatedData,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                        SavedData data = snapshot.data;
+                        WeatherModel data = snapshot.data;
 
                         return SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
@@ -87,11 +88,7 @@ class HomeScreen extends StatelessWidget {
                                       .format(DateTime.now()),
                                   size: 20.0),
                               20.heightBox,
-                              const Icon(
-                                Icons.sunny,
-                                color: Colors.amberAccent,
-                                size: 150,
-                              ),
+                              weatherIcon(fetchedIcon = data.weather[0].icon),
                               30.heightBox,
                               boldText(
                                   text: '${data.main.temp.toInt()}° C',
